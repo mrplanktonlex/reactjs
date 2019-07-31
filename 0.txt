@@ -1,1 +1,191 @@
-_0
+eg.1. 
+	<div id="p1"></div>
+	+
+	function Person(){
+	return (
+		// jsx goes here.
+		<div class="person">.... IMP: class-keyword is reserved in JS, so react requires this to be "className" instead. VIMP!!
+	);
+	
+	ReactDOM.render( <Person />, document.querySelector('#p1'));
+	
+eg.2.
+eg.1. is not scalable because we cannot reuse Person for a div with id p2
+- Here we add name & age properties in ReactDOM.render() and the same becomes available in the div using "props"
+	<div id="p1">{props.name}</div>
+	<div id="p2">{props.age}</div>	<<<==== note this. note name and age
+	
+	+ 
+	
+	function Person(){
+	return ( 
+		// jsx goes here.
+		<div className="person"> // react wants it to be className
+	);
+	
+	ReactDOM.render( <Person name="xyz1", age = "2" />, document.querySelector('#p1'));
+	ReactDOM.render( <Person name="xyz2", age = "5" />, document.querySelector('#p2')); <<<==== note this. note name and age
+	
+---
+
+eg.3. This is how we create single page application.
+- Here we got rid of multiple declarations in html and also multiple ReactDOM.render().
+	<div id="app"></div>	
+	
+	+ 
+	
+	var app = (
+		<div>
+			<Person name="xyz1" age= "2" />
+			<Person name="xyz2" age = "5" />
+		</div>
+	); 
+	
+	ReactDOM.render( app , document.querySelector('#app'));
+	
+===========
+
+SPA:- Single page application
+> server serves single page.
+> Once served, react/ang takes over
+
+MPA:- multiple page application
+> server serves more than 1 pages.
+
+============
+
+Next-gen Features in JS:-
+- Arrow functions:-
+  const somefunc = () => {} // this keeps its context within the function.
+
+- Export & Import
+- Setting up a build:-
+- Classes:-
+- class, properties & method
+	const myPerson = new Person();
+	
+	> constructor(){}
+	> class Person extends Human
+		Person's constructor should have: super(); // using super() is mandatory !!!
+		
+- Inside a class, there are properties and methods:
+
+properties
+	ES6: 
+		constructor(){
+			this.name = 'plankton';
+		}
+
+	ES7:
+		name = 'plankton'; // as in ang ??
+		
+methods:-
+	ES6:- function xyz(){}
+	ES7:- xyz = () => {} // helps keep this context correct.
+	
+	VIMP:- note when u use the ES7 syntax, the super() call is not required!!!
+			>> u can REMOVE the super() call from Person-class while extending Human-class
+
+- The ... operator
+How u used it, determines whether ucall it spread -or- rest operator
+		spread:-
+			const newarr = [ ...oldarr, 10, 20 ];
+			const newobj = { ...oldobj, newProperty: 'newValue' } 
+		
+		rest:- 
+			function x (...args){
+				return args.sort(); //args.filter( el => el === 1) is another example of args. 
+			}
+
+- Destructuring:=
+	NOTE:- spread operator removes ALL properties, whereas destructuring removes ONLY certain properties.
+	[a, b] = ['hello', 'world]
+	
+	{name} = { name: "Max, age: 28 }
+	// age variable on LHS does not exist, so console logging "age" will give undefined.
+	
+	
+============
+
+arr functions (comes with basic JS, not in ES6/ES7):-
+ .map() // always creates a new data structure.
+ .filter(),
+ .sort()
+ 
+ arr.map((e) => {
+	return e*2;
+ })
+
+============
+
+Setting up a project:- using a build workflow:-
+>> create react app is the tool to setup 
+
+node 8.5/6.11
+> npm install -g create-react-app
+> cd to ur folder. 
+> create-react-app <projname> -OR-
+> create-react-app <projname> --scripts-version 1.1.5 (max's way)
+
+cd <projname>
+npm start
+	- goto http://localhost:3000/
+
+---
+
+goto package.json and see the dependencies.
+	- u can see react, react-dom and react-scripts 
+
+/public folder is Vimp.
+	index.html is the ONLY file which will get served.
+		<div id="root"></div>
+	this is where our SPA will be injected.
+
+/src folder
+	index.js 
+		// we ReactDOM.render() the "root"  div we saw above.
+		- references App.js 
+			>> this is where the code resides !!!
+	
+		- App.css, index.css are global css files 
+		
+---
+	
+import react, {Component} from 'react';
+
+class App extends Component {
+	render( ... );
+
+export default App;
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+

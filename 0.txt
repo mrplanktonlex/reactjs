@@ -158,7 +158,476 @@ class App extends Component {
 
 export default App;
 
----
+=========================================
+2021
+=========================================
+
+React, Hooks, React Router, Redux
+
+Why use react:
+- better state management than vanilla JS
+- focus more on business logic, than code explosion
+- good ecosystem, community
+
+SPA vs MPA 
+SPA
+- content is rerendered on client (content is rendered from server)
+
+React 
+- For one page, One Root react comp and many child comps ?
+- for SPA, only one ReactDOM.render() call as there is only 1 root comp.
+for MPA, one reactDOM.render() per widget; as not all react comps and non-react comps are not under one root comp.
+
+Course Outline:-
+- ES6 functions, classes, etc.
+- Debugging
+- Styling react comps
+- comp. life cycles, check for updates to comps
+- async http requests
+- routing 
+- forms validation 
+- redux 
+- async actions in redux
+- authentication (react auth)
+- testing react apps 
+- Deployment 
+- Animations, Next Steps, Webpack 
+
+You shouldn't need it right now - but in case you ever want to dive in, here's the official React documentation: https://reactjs.org/
+Had issues with the Codepen demo? Here's the finished source code: https://codepen.io/anon/pen/MELQaQ
+
+====
+
+Next Gen Javascript 
+
+1) import & export: default-export vs named-export 
+  person.js 	
+	export default person		import person from './person.js' -or- import prs from './person.js' (person/prs name is not important)
+  utility.js
+	export const clean = () => {}	import { clean } from './utility.js'	[ note here {} is required because there is no default-exporting ]
+	export const pi = 3.14
+	
+as-keyword
+	import { clean as cln } from 'utility.js';
+	import * as bundled from 'utility.js';
+	
+	
+2) Class Human {
+	constructor(){}
+}	
+	Class Person extends Human(){	// extends allows functions of super class to be called in Person.
+		constructor(){
+			super(); // this is important.
+		}
+	}
+	
+3)
+	ES6: constructor() {							ES6 method myMethod(){ ... }
+			this.myProp = 'value';
+		}
+		
+	ES7 : constructor (){
+			myProp = 'value'; // like Typescript 	ES7 method myMethod = ()=>{ ... }
+		}
+			Note: super() is not required in ES7 
+	
+4) creating a new object using spread op
+	const Person = {}
+	const secondPerson = { ...Person }; // its a different reference.
+	
+====
+
+Section 3: React basics
+
+setup:
+	npm install -g create-react-app 
+	create-react-app  myapp
+	cd myapp
+	npm start
+	
+	http://localhost:3000/
+	
+	
+	Folder Structure:- 
+		src/    package.json 
+		public/
+		public/index.html (this is where we have <div id="root">)
+			   index.css (for global styling)
+			   
+		src/index.js (ReactDOM.render() to the root-element above).
+			ReactDOM.render(<App />, document.getElementById('root')); // note looks like u can use .getElementById or .querySelector, it does not matter.
+																	   // looks like.
+		src/app.js and app.css is where the function which returns JSX resides. i.e. App 
+	
+
+App.js [element/function/class which render-returns] 
+	import React, { Component } from 'react';
+	import './App.css' ; // ???
+
+	class App extends Component {
+		render(){
+			return (
+				// JSX here within ONE root div-element. // tag1
+			);
+		}
+	}
+	export default App 
+
+Index.js [Parent which binds App to root-element on DOM]
+	import React from 'react';
+	import ReactDOM from 'react-dom';
+	import App from './App';
+		ReactDOM.render(<App />, document.getElementById('root')); 
+	
+====
+	
+Understanding JSX. 
+	
+	See tag1. that entire return () inside render(){} can replaced.
+		eg.
+		render () {	
+			return (
+				<div className="App">
+					<h1> hello world </h1>
+				</div>
+			)
+		}
+			above can be replaced by any of below:
+				React.createElement('div', null, React.createElement('h1', null, 'hellow world'));
+				React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'hellow world')); 
+										 // className is react-name for html class-attribute 
+
+====
+
+L32: Creating a functional component.
+	Person/Person.js 
+			- u can use class, but u can use function 
+			
+				import React from 'react';
+				const person = () => {
+					return <p> I am a person </p>
+				}
+				export default person.
+				
+	App.js 
+		import Person (can be some other name too) from 'Person/Person'; // .js is implied.
+		...
+		...
+	
+		render () {	
+			return (
+				<div className="App">
+					<h1> hello world </h1>
+					<Person /> 
+					<Person> </Person>  (note:- custom comp should start with Initial caps so that i doesnt interfere with regular lowercase html)
+				</div>
+			)
+		}
+
+L 33  note {} is used for js-logic so react treats it like js logic. one line expresssions
+
+	const person = () => {
+					return <p> I am a person and { Math.floor(Math.random * 30) } </p>
+				}
+				
+L 34  How to make react handle attributes to ur custom comp. Person.
+	App.js
+	
+	render () {	
+			return (
+				<div className="App">
+					<h1> hello world </h1>
+					<Person name="Jen"  age = "38"	/> 
+					<Person name="Max"  age = "40"	/> 
+				</div>
+			)
+		}
+	Person.js 
+		const person = (props) => { // name of arg can be anything, not necessary it should be props
+					return <p> I am {props.name} and {props.age} years oold </p>
+				}
+		
+L 37
+	content projection in react 
+		<Person name="Max"  age = "40"	>Hobbies: Racing</Person>
+			Now the "Hobbies: Racing" part can be accessed using {props.children}
+	
+L 38 
+		state: managing from inside the component. Class components usually have it. (because it extends Component).
+				function components did not have it until version 8, i think
+				always use function comps as much as possible and restrict-state usage to class comps. else it will become unmanageable.
+				
+				
+		state = {
+				persons:[
+					{name: 'Max', age: 28},
+					{name: 'Jen', age: 38}
+				]
+			}
+		
+		LHS is a react-class-member, and RHS is custom data.
+		Note, props and state, if they change, then re-rendering of the data happens.
+		
+L 39 
+		<button onClick={this.someFunc}>clickme</button>
+		
+		Note:- its onClick (Snakecase) and not onclick (vanilla js)
+			   we are just passing reference of a member function within the class.
+			   we are NOT executing it instantly like { this.someFunc() }.
+			   >> note the function reference is within single curlies {} 
+			   
+====
+
+ but to which other events can you listen? You can find a list of supported events here: https://reactjs.org/docs/events.html#supported-events
+
+Clipboard Events
+Event names:
+
+onCopy onCut onPaste
+Properties:
+
+DOMDataTransfer clipboardData
+Composition Events
+
+Event names:
+
+onCompositionEnd onCompositionStart onCompositionUpdate
+Properties:
+
+string data
+Keyboard Events
+
+Event names:
+
+onKeyDown onKeyPress onKeyUp
+Properties:
+
+boolean altKey
+number charCode
+boolean ctrlKey
+boolean getModifierState(key)
+string key
+number keyCode
+string locale
+number location
+boolean metaKey
+boolean repeat
+boolean shiftKey
+number which
+Focus Events
+
+Event names:
+
+onFocus onBlur
+These focus events work on all elements in the React DOM, not just form elements.
+
+Properties:
+
+DOMEventTarget relatedTarget
+Form Events
+
+Event names:
+
+onChange onInput onInvalid onSubmit
+For more information about the onChange event, see Forms.
+
+Mouse Events
+
+Event names:
+
+onClick onContextMenu onDoubleClick onDrag onDragEnd onDragEnter onDragExit
+onDragLeave onDragOver onDragStart onDrop onMouseDown onMouseEnter onMouseLeave
+onMouseMove onMouseOut onMouseOver onMouseUp
+The onMouseEnter and onMouseLeave events propagate from the element being left to the one being entered instead of ordinary bubbling and do not have a capture phase.
+
+Properties:
+
+boolean altKey
+number button
+number buttons
+number clientX
+number clientY
+boolean ctrlKey
+boolean getModifierState(key)
+boolean metaKey
+number pageX
+number pageY
+DOMEventTarget relatedTarget
+number screenX
+number screenY
+boolean shiftKey
+Selection Events
+
+Event names:
+
+onSelect
+Touch Events
+
+Event names:
+
+onTouchCancel onTouchEnd onTouchMove onTouchStart
+Properties:
+
+boolean altKey
+DOMTouchList changedTouches
+boolean ctrlKey
+boolean getModifierState(key)
+boolean metaKey
+boolean shiftKey
+DOMTouchList targetTouches
+DOMTouchList touches
+UI Events
+
+Event names:
+
+onScroll
+Properties:
+
+number detail
+DOMAbstractView view
+Wheel Events
+
+Event names:
+
+onWheel
+Properties:
+
+number deltaMode
+number deltaX
+number deltaY
+number deltaZ
+Media Events
+
+Event names:
+
+onAbort onCanPlay onCanPlayThrough onDurationChange onEmptied onEncrypted
+onEnded onError onLoadedData onLoadedMetadata onLoadStart onPause onPlay
+onPlaying onProgress onRateChange onSeeked onSeeking onStalled onSuspend
+onTimeUpdate onVolumeChange onWaiting
+Image Events
+
+Event names:
+
+onLoad onError
+Animation Events
+
+Event names:
+
+onAnimationStart onAnimationEnd onAnimationIteration
+Properties:
+
+string animationName
+string pseudoElement
+float elapsedTime
+Transition Events
+
+Event names:
+
+onTransitionEnd
+Properties:
+
+string propertyName
+string pseudoElement
+float elapsedTime
+Other Events
+
+Event names:
+
+onToggle
+
+==========
+
+L42 
+	in other class-methods like someFunc() we should NOT mutate state directly.
+		eg. DONOT do this: 
+					someFunc(){
+						this.state.persons[0].name = 'Jen';
+						}
+			// react will give warnings.
+			
+			instead use:
+				this.setState({
+					persons: [{name: 'maximilian', age 38}, ... ]
+				})
+
+			Note, it the state:{} obj had persons, addresses, etc. as keys, and in this.setState() u changes only persons:, then addresses: will remain as is.
+			so in .setState() call, react will change only the value of the key u have mentioned, and not the other keys in the state-obj.
+			in this case, we are changing only persons: key.
+				-- .setState() is because we r extending Component.
+
+
+==========
+
+L44. 
+	React Hooks	
+		- convert class-style into function-style declaration using props (change App-Class to const app = (props) => {} )
+		- remove the render() method.
+		- import useState instead of Component from 'react'.
+		- call it useState(). u pass the state object to this method.
+			
+		- it returns 2 elements
+			1st element: current state and if we change it it will return the updated state.
+			2nd element: is a function which allows us to update this state.
+			
+		- 
+		const App = (props) => {
+			const [personState, setPersonFunc] = useState({
+				persons:[
+					{name: 'Max', age: 28},
+					{name: 'Jen', age: 38}
+				],
+				addresses: []
+			});
+
+			const someFunc = () => {			//IMP: its ok to have a func definition within a func definition.
+				setPersonFunc({					// this update method will NOT merge like setState() in a class-component. It will overwrite all keys.
+												// So, no addresses: in the resultant state obj. 
+												// to add addresses use:- , addresses: personState.addresses to this obj.
+					persons:[
+						{name: 'Max', age: 28},
+						{name: 'Jen', age: 38}
+					]
+				})
+			}
+			
+			return (
+				<div className="App">
+					<button onClick={this.someFunc}>click me </button>
+				</div>
+				....
+			) 
+		};
+		
+		export default App; // ???
+		
+---------
+
+// to add addresses use:- , addresses: personState.addresses to this obj.
+this is not elegant, so lets use useState multiple times.
+
+	const [addresses, setAddressesFunc] = useState({addresses: []});
+	
+	So, as u can see we r creating state-slices using react-hooks in functional components.
+	
+	Q. What are react hooks?
+	A. React hooks are used for creating state-slices in functional components.
+	
+=====
+
+The class based approach is what we will use in this course.
+
+Stateless means dumb/presentational comp. eg. Person.js 
+Stateful means smart comp. 
+	- either using Class + setState
+	- or using functional comp + useState() for slices + any other react-hooks.
+
+Its better to have as much stateless comps as possible, so that state management classes/functions are few.
+else it will state-management hell.
+
+=====
+
+
+
 
 
 

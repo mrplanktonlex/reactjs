@@ -624,7 +624,167 @@ Stateful means smart comp.
 Its better to have as much stateless comps as possible, so that state management classes/functions are few.
 else it will state-management hell.
 
-=====
+++++++++++++++++++++++++++++++++++++++
+
+Examples:-
+
+delete npm/ and npm-cache/ folder in C:\Users\mrjsa\AppData\Roaming
+nvm list
+nvm uninstall 10.13.0
+nvm uninstall 8.12.0 
+nvm install 14.15.5 (npm version will 6.14.11). (required for react 17+ )
+nvm use 14.15.5 
+this is not working ... node --version.
+nvm uninstall 14.15.5
+lets not use nvm but directly install node v14.15.5 from the msi-downloaded setup 
+path-too long error in windows, then change the path from program files to C:\xxx\nodejs 
+
+cmd
+node --version 
+14.15.5
+npm --version 
+6.14.11
+npm install -g create-react-app 
+
+create-react-app appclasscomponent
+cd appclasscomponent
+npm start run
+
+++++++++++++++++++++++++++++++++++++
+
+create-react-app appclasscomponent.
+eg. 1. class style component + 1 dynamic function component (Person.js) + props + setState() which is async
+
+xtra:-	  
+	  >>setState() is derived from Component 
+	  >> class App extends Component {
+	     }
+	  >>import Component from 'react';
+	  >> {props.name}, {props.age}, {props.children}
+	  >> Class style requires a render() method; whereas function style does NOT require render() method.
+	  >> Person.js is dumb or stateless comp. App.js is smart or stateful component
+	  >> props is in dumbcomp; state is within the smartcomp; any changes to props/state object, will cause UI to re-render.
+	  >> setState is fcking async. so, put a delay to using setTimeout to get the latest values
+	  
+Files:-
+	src/index.js 
+		ReactDOM.render(<App />, document.getElementById('root')); // one time mapping 
+		
+	public/index.html 
+		
+	App.js 	
+		class App extends Component {
+			state = { persons: [
+								{name: 'Vin', age: 28},
+								],
+					  addresses: 'no addresses' yet.
+					};
+			
+			clickFunc = () => {		// VIMP!!: this HAS to be arrow-func based, else this.setState will error for undefined this.
+				console.log('clicked');
+				//DO NOT DO THIS: this.state.persons[0].name = 'russellcrowe';  // react does NOT allow this.
+				this.setState({
+					persons: [{name: 'Diesel', age 38}, ... ]
+				});
+			}
+			
+			render(){
+				return(  // <<======================================== jsx begins.
+					<div className="App">	<<======================== one root ele. react's className instead of class 
+						<Person />
+						<Person name="Jens1" age = "28 >children or content projection in react</Person>
+						<button onClick={this.clickFunc}> click me </button>  //<<====== react's onClick instead of onclick. 
+																				// No double quotes. No function execution (), just the reference in {} 
+																				
+						<Person name="Jens2" age = "38" myclick={this.clickFunc} /> //<<===== allowing dumbcomp to call smartcomp's click-handler
+																				   // props.myclick in dumbcomp Person.js
+																				   
+						<Person name={this.state.persons[0].name} age = {this.state.persons[0].age} myclick={this.clickFunc} />														
+					</div>
+				)
+			}
+		} // class ends 
+		
+		Person.js
+			import React from 'react';
+			const person = (props) => {
+				return <p>Person is {props.name} with age {props.age} {props.children}, onclick {props.myclick} </p>
+			}
+			export default person 
+			
+--- 
+
+Note: setState is async so always use setTimeout to get the latest state-values.
+	 clickFunc = () => {
+		console.log('clicked1', this.state);
+		this.setState({
+		  persons: [
+			{ name: 'diesel', age: '40'}
+		  ]
+		});
+
+		setTimeout(() => {
+		  console.log ('clicked2:' , this.state);  // state still has addresses
+		}, 300);
+	  }
+
+---
+
+Full working code:- 
+App.js 
+	
+	import React, { Component } from 'react';
+	import ReactDOM from 'react-dom';
+	import Person from './Person/Person';
+	import './App.css';
+
+	class App extends React.Component {
+	  state = {
+		persons: [
+		  {name: 'vin', age: '28'}
+		],
+		addresses: []
+	  };
+
+	  clickFunc = () => {
+		console.log('clicked1', this.state);
+		this.setState({
+		  persons: [
+			{ name: 'diesel', age: '40'}
+		  ]
+		});
+
+		setTimeout(() => {
+		  console.log ('clicked2:' , this.state);  // state still has addresses
+		}, 300);
+	  }
+
+	  render(){
+		return (
+		  <div className="App">
+			<p>welcome to the jungle</p>
+			<Person name="jens1" age="10" />
+			<Person name="jens2" age="11" ><b>Content between tags</b></Person>
+			<button onClick={this.clickFunc}>clickme</button>
+			<Person name={this.state.persons[0].name} age={this.state.persons[0].age} ><b>Content between tags</b></Person>
+		  </div>
+		)
+	  }
+	}
+
+	export default App; 
+	
+Person.js 
+	import React from 'react';
+
+	const person = (props) => {
+		return <p>person is {props.name} and age is {props.age}. Content: {props.children}</p>
+	};
+
+	export default person;
+	
+++++++++++++++++++
+
 
 
 
